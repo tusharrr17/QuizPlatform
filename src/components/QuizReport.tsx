@@ -10,6 +10,7 @@ interface QuizReportProps {
 }
 
 export function QuizReport({ questions, answers, email, onRetry }: QuizReportProps) {
+  // Calculate the number of correct answers and percentage score
   const calculateScore = () => {
     let correct = 0;
     questions.forEach((question, index) => {
@@ -48,6 +49,7 @@ export function QuizReport({ questions, answers, email, onRetry }: QuizReportPro
           {questions.map((question, index) => (
             <div key={index} className="bg-white rounded-lg shadow-md p-6">
               <div className="flex items-start justify-between">
+                {/* Use dangerouslySetInnerHTML to render HTML entities in questions */}
                 <h3
                   className="text-lg font-semibold text-gray-800 mb-4"
                   dangerouslySetInnerHTML={{ __html: `${index + 1}. ${question.question}` }}
@@ -62,6 +64,7 @@ export function QuizReport({ questions, answers, email, onRetry }: QuizReportPro
               <div className="space-y-2">
                 <div className="flex items-center">
                   <span className="font-medium text-gray-700 mr-2">Your answer:</span>
+                  {/* Color code the user's answer based on correctness */}
                   <span
                     className={`${
                       answers[index] === question.correct_answer

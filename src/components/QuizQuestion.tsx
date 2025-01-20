@@ -8,12 +8,14 @@ interface QuizQuestionProps {
 }
 
 export function QuizQuestion({ question, currentAnswer, onAnswerSelect }: QuizQuestionProps) {
+  // Combine correct and incorrect answers and shuffle them
   const allAnswers = [...question.incorrect_answers, question.correct_answer].sort(
     () => Math.random() - 0.5
   );
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6 animate-fadeIn">
+      {/* Use dangerouslySetInnerHTML to render HTML entities in questions */}
       <h2
         className="text-xl font-semibold text-gray-800 mb-6"
         dangerouslySetInnerHTML={{ __html: question.question }}

@@ -7,12 +7,14 @@ interface TimerProps {
 }
 
 export function Timer({ timeRemaining, onTimeUp }: TimerProps) {
+  // Format seconds into MM:SS display
   const formatTime = useCallback((seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
   }, []);
 
+  // Trigger onTimeUp callback when timer reaches zero
   useEffect(() => {
     if (timeRemaining <= 0) {
       onTimeUp();

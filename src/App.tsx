@@ -7,13 +7,15 @@ import { QuizReport } from './components/QuizReport';
 import { Question, QuizState, QuizResponse } from './types';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
-const QUIZ_TIME = 30 * 60; // 30 minutes in seconds
+// Quiz duration in seconds (30 minutes)
+const QUIZ_TIME = 30 * 60;
 
+// Initial state for the quiz - used for both first load and reset
 const initialQuizState: QuizState = {
   questions: [],
   currentQuestionIndex: 0,
   answers: {},
-  visitedQuestions: new Set([0]),
+  visitedQuestions: new Set([0]), // Start with first question marked as visited
   timeRemaining: QUIZ_TIME,
   email: '',
   isQuizComplete: false,
@@ -22,6 +24,7 @@ const initialQuizState: QuizState = {
 function App() {
   const [quizState, setQuizState] = useState<QuizState>(initialQuizState);
 
+  // Fetch questions from the Open Trivia DB API
   const fetchQuestions = async () => {
     try {
       const response = await fetch('https://opentdb.com/api.php?amount=15');
@@ -33,6 +36,7 @@ function App() {
     }
   };
 
+  // Timer effect: countdown when quiz is active
   useEffect(() => {
     let timer: number;
     if (quizState.email && !quizState.isQuizComplete) {
@@ -46,6 +50,7 @@ function App() {
     return () => clearInterval(timer);
   }, [quizState.email, quizState.isQuizComplete]);
 
+  // Initialize quiz with user's email and fetch questions
   const handleEmailSubmit = async (email: string) => {
     const questions = await fetchQuestions();
     setQuizState((prev) => ({
@@ -55,6 +60,7 @@ function App() {
     }));
   };
 
+  // Record user's answer for the current question
   const handleAnswerSelect = (answer: string) => {
     setQuizState((prev) => ({
       ...prev,
@@ -65,6 +71,7 @@ function App() {
     }));
   };
 
+  // Handle direct navigation to a specific question
   const handleQuestionSelect = (index: number) => {
     setQuizState((prev) => ({
       ...prev,
@@ -73,6 +80,7 @@ function App() {
     }));
   };
 
+  // Auto-submit quiz when time runs out
   const handleTimeUp = useCallback(() => {
     setQuizState((prev) => ({
       ...prev,
@@ -80,12 +88,15 @@ function App() {
     }));
   }, []);
 
+  // Reset quiz state to initial values for a new attempt
   const handleRetry = () => {
     setQuizState(initialQuizState);
   };
 
+  // Handle navigation between questions using prev/next buttons
   const navigateQuestion = (direction: 'prev' | 'next') => {
     setQuizState((prev) => {
+      // Calculate new index within bounds
       const newIndex =
         direction === 'next'
           ? Math.min(prev.currentQuestionIndex + 1, prev.questions.length - 1)
@@ -98,10 +109,12 @@ function App() {
     });
   };
 
+  // Show email form if user hasn't started quiz
   if (!quizState.email) {
     return <EmailForm onSubmit={handleEmailSubmit} />;
   }
 
+  // Show results if quiz is complete or time is up
   if (quizState.isQuizComplete || quizState.timeRemaining <= 0) {
     return (
       <QuizReport
@@ -113,6 +126,7 @@ function App() {
     );
   }
 
+  // Main quiz interface
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
       <div className="max-w-4xl mx-auto">

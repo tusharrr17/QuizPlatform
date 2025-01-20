@@ -27,6 +27,10 @@ export function QuestionNavigation({
               w-10 h-10 rounded-lg font-medium transition-all duration-200
               ${currentQuestion === i ? 'ring-2 ring-indigo-600' : ''}
               ${
+                // Color coding for question status:
+                // Green: Answered
+                // Yellow: Visited but not answered
+                // Gray: Not visited
                 answers[i]
                   ? 'bg-green-100 text-green-800'
                   : visitedQuestions.has(i)
